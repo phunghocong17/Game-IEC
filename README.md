@@ -85,4 +85,16 @@ var newItemType = itemCounts
 
 và gán nó vào vị trí mới 
 
+# Về việc ưu điểm và nhược điểm của thiết kế dự án
 
+Ưu điểm :
+
+- coregamelay khá ổn , có nhiều chỗ cần tối ưu hơn về code nhưng xét chung thì khá ổn để cho game phát triển lâu dài
+- Hệ thống UI có tổ chức tốt
+- Sử dụng dotween để có thể làm được nhưng animation mượt trong game 
+
+Nhược điểm :
+- Code cần tối ưu vài chỗ nhất là dùng objectpooling thay vì Instantiate để tăng hiệu suất game 
+- Chưa tối ưu ảnh để cho build size
+- Sử dụng singleton thay vì dùng findobjectbytypes hoặc add component sẽ làm game mượt hơn và có thể để cho người sau dễ bảo trì code hơn 
+- Game còn 1 số bug và có thể tổ chức việc quản lí prefab cho dễ sử dụng hơn 
