@@ -9,7 +9,7 @@ public class UIMainManager : MonoBehaviour
 {
     private IMenu[] m_menuList;
 
-    private GameManager m_gameManager;
+    public GameManager m_gameManager;
 
     private void Awake()
     {

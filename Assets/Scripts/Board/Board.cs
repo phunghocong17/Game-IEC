@@ -136,8 +136,43 @@ public class Board
     }
 
 
+    //internal void FillGapsWithNewItems()
+    //{
+    //    for (int x = 0; x < boardSizeX; x++)
+    //    {
+    //        for (int y = 0; y < boardSizeY; y++)
+    //        {
+    //            Cell cell = m_cells[x, y];
+    //            if (!cell.IsEmpty) continue;
+
+    //            NormalItem item = new NormalItem();
+
+    //            item.SetType(Utils.GetRandomNormalType());
+    //            item.SetView();
+    //            item.SetViewRoot(m_root);
+
+    //            cell.Assign(item);
+    //            cell.ApplyItemPosition(true);
+    //        }
+    //    }
+    //}
+
     internal void FillGapsWithNewItems()
     {
+        var itemCounts = new Dictionary<NormalItem.eNormalType, int>();
+
+        for (int x = 0; x < boardSizeX; x++)
+        {
+            for (int y = 0; y < boardSizeY; y++)
+            {
+                if (m_cells[x, y].Item is NormalItem normalItem)
+                {
+                    var itemType = normalItem.ItemType;
+                    itemCounts[itemType] = itemCounts.ContainsKey(itemType) ? itemCounts[itemType] + 1 : 1;
+                }
+            }
+        }
+
         for (int x = 0; x < boardSizeX; x++)
         {
             for (int y = 0; y < boardSizeY; y++)
@@ -145,18 +180,35 @@ public class Board
                 Cell cell = m_cells[x, y];
                 if (!cell.IsEmpty) continue;
 
-                NormalItem item = new NormalItem();
+                var excludedTypes = new List<NormalItem.eNormalType>();
+                if (x > 0 && m_cells[x - 1, y].Item is NormalItem leftItem) excludedTypes.Add(leftItem.ItemType);
+                if (x < boardSizeX - 1 && m_cells[x + 1, y].Item is NormalItem rightItem) excludedTypes.Add(rightItem.ItemType);
+                if (y > 0 && m_cells[x, y - 1].Item is NormalItem bottomItem) excludedTypes.Add(bottomItem.ItemType);
+                if (y < boardSizeY - 1 && m_cells[x, y + 1].Item is NormalItem topItem) excludedTypes.Add(topItem.ItemType);
 
-                item.SetType(Utils.GetRandomNormalType());
+                var newItemType = itemCounts
+                    .Where(kvp => !excludedTypes.Contains(kvp.Key))
+                    .OrderBy(kvp => kvp.Value)
+                    .Select(kvp => kvp.Key)
+                    .FirstOrDefault();
+
+                if (newItemType == default)
+                {
+                    newItemType = Utils.GetRandomNormalType();
+                }
+
+                NormalItem item = new NormalItem();
+                item.SetType(newItemType);
                 item.SetView();
                 item.SetViewRoot(m_root);
 
                 cell.Assign(item);
                 cell.ApplyItemPosition(true);
+
+                itemCounts[newItemType] = itemCounts.ContainsKey(newItemType) ? itemCounts[newItemType] + 1 : 1;
             }
         }
     }
-
     internal void ExplodeAllItems()
     {
         for (int x = 0; x < boardSizeX; x++)

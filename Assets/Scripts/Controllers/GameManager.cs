@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
         {
             m_state = value;
 
+            stateDisplay = m_state; 
+
             StateChangedAction(m_state);
         }
     }
@@ -44,6 +46,9 @@ public class GameManager : MonoBehaviour
     private UIMainManager m_uiMenu;
 
     private LevelCondition m_levelCondition;
+    public eLevelMode currentMode;
+    [SerializeField]
+    private eStateGame stateDisplay;
 
     private void Awake()
     {
@@ -88,14 +93,31 @@ public class GameManager : MonoBehaviour
 
         if (mode == eLevelMode.MOVES)
         {
-            m_levelCondition = this.gameObject.AddComponent<LevelMoves>();
-            m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), m_boardController);
+            if (!this.gameObject.GetComponent<LevelMoves>())
+            {
+                m_levelCondition = this.gameObject.AddComponent<LevelMoves>();
+                m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), m_boardController);
+            }
+            else
+            {
+                m_levelCondition = this.gameObject.GetComponent<LevelMoves>();
+                m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), m_boardController);
+            }
         }
         else if (mode == eLevelMode.TIMER)
         {
-            m_levelCondition = this.gameObject.AddComponent<LevelTime>();
-            m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), this);
+            if (!this.gameObject.GetComponent<LevelTime>())
+            {
+                m_levelCondition = this.gameObject.AddComponent<LevelTime>();
+                m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), this);
+            }
+            else
+            {
+                m_levelCondition = this.gameObject.GetComponent<LevelTime>();
+                m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), this);
+            }
         }
+        currentMode = mode;
 
         m_levelCondition.ConditionCompleteEvent += GameOver;
 
