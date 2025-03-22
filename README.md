@@ -15,6 +15,15 @@
 
 ![image](https://github.com/user-attachments/assets/b0f7b3c6-b121-4227-a102-6df7f09f8ec1)
 
+![image](https://github.com/user-attachments/assets/2c05a566-f278-4e33-9ab2-895ecb3394bc)
+
+
+- Xuất hiện bug khi hết thời gian chơi cùng lúc xuất hiện hint animation và sau khi chơi lại timer không đếm nữa
+
+![image](https://github.com/user-attachments/assets/60b1a266-a0ba-4085-a02b-4d304efb96e1)
+
+
+
 
 # Sử dụng Scriptable object để reskin 
 
@@ -37,10 +46,43 @@ Gán scriptable tương ứng cho các item
 ![image](https://github.com/user-attachments/assets/34399487-6da2-487d-8598-749732a8ac1d)
 
 
-Kết quả có được 
+Kết quả có được : 
 
-![Uploading image.png…]()
+![image](https://github.com/user-attachments/assets/f2fb25a8-7d9e-444f-9399-18360a491512)
 
 
+# Tạo nút restart button 
+
+đầu tiên tạo nút restart để người chơi có thể click vào :
+
+![image](https://github.com/user-attachments/assets/8e352522-a4ba-4ae0-9942-1ad362544e58)
+
+Khai báo button restart và  viết hàm restart:
+
+ ![image](https://github.com/user-attachments/assets/1bcff03d-896b-4a73-b8d9-97375b1b027e)
+
+ ở hàm Loadlevel thêm code để ngăn chặn việc add compponent liên tục :
+
+![image](https://github.com/user-attachments/assets/94759675-b7de-4412-a0ad-cb34dc705d18)
+
+
+# Edit the FillGapsWithNewItems function
+
+![image](https://github.com/user-attachments/assets/88fac1a9-9036-47fe-a32f-73d7a92fd08a)
+
+  if (x > 0 && m_cells[x - 1, y].Item is NormalItem leftItem) excludedTypes.Add(leftItem.ItemType);
+  if (x < boardSizeX - 1 && m_cells[x + 1, y].Item is NormalItem rightItem) excludedTypes.Add(rightItem.ItemType);
+  if (y > 0 && m_cells[x, y - 1].Item is NormalItem bottomItem) excludedTypes.Add(bottomItem.ItemType);
+  if (y < boardSizeY - 1 && m_cells[x, y + 1].Item is NormalItem topItem) excludedTypes.Add(topItem.ItemType);
+
+ở đây em lọc và lấy các loại item trong 4 ô xung quanh để add vào excludedTypes rồi chọn item có số lượng ít nhất và ko nằm trong excludedTypes
+
+var newItemType = itemCounts
+                .Where(kvp => !excludedTypes.Contains(kvp.Key))
+                .OrderBy(kvp => kvp.Value)
+                .Select(kvp => kvp.Key)
+                .FirstOrDefault();
+
+và gán nó vào vị trí mới 
 
 
